@@ -2,6 +2,7 @@ package ru.javaops.cloudjava.aggregateservice.client;
 
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.retry.annotation.Retry;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -29,12 +30,10 @@ public class MenuClient extends BaseClient {
     private static final String MENU_BACKEND = "menuBackend";
     private final WebClient webClient;
 
-    public MenuClient(WebClient.Builder clientBuilder,
+    public MenuClient(@Qualifier("menuWebClient") WebClient menuWebClient,
                       ExternalServiceProps props) {
         super(props);
-        this.webClient = clientBuilder
-                .baseUrl(props.getMenuServiceUrl())
-                .build();
+        this.webClient = menuWebClient;
     }
 
     @CircuitBreaker(name = MENU_BACKEND)

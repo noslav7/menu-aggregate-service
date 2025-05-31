@@ -3,6 +3,7 @@ package ru.javaops.cloudjava.aggregateservice.client;
 import io.github.resilience4j.circuitbreaker.CallNotPermittedException;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.retry.annotation.Retry;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
@@ -23,12 +24,10 @@ public class ReviewsClient extends BaseClient {
 
     private final WebClient webClient;
 
-    public ReviewsClient(WebClient.Builder webclientBuilder,
+    public ReviewsClient(@Qualifier("reviewsWebClient") WebClient reviewsWebClient,
                          ExternalServiceProps props) {
         super(props);
-        this.webClient = webclientBuilder
-                .baseUrl(props.getReviewServiceUrl())
-                .build();
+        this.webClient = reviewsWebClient;
     }
 
     @CircuitBreaker(name = REVIEW_BACKEND, fallbackMethod = "getReviewsWithMenuRatingCBFallback")
